@@ -1,0 +1,17 @@
+#+TITLE: guix-uio-free
+#+OPTIONS: toc:nil num:nil
+
+This is a Guix channel for packages used by UiO.
+
+* How to use
+
+Create or modify the =~/.config/guix/channels.scm= file so it looks
+something like this:
+
+:  (cons (channel
+:         (name 'uio-free)
+:         (url "https://github.com/mbakke/guix-uio-free.git")
+:         (branch "master"))
+:        %default-channels)
+
+Then run ~guix pull~.  Now the packages should be available.
