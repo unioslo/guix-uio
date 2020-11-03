@@ -15,3 +15,7 @@ something like this:
 :        %default-channels)
 
 Then run ~guix pull~.  Now the packages should be available.
+
+For testing and development, you can use e.g.:
+
+: guix build -L . nivlheim
