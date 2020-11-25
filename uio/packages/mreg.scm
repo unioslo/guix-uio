@@ -95,35 +95,32 @@ be delegated so that groups can manage only the networks they own.")
       (license gpl3+))))
 
 (define-public mreg-cli
-  (let ((commit "200b0baf249ecbd2c23fbe9a68dd21cdf5de7140")
-        (revision "0"))
-    (package
-      (name "mreg-cli")
-      (version (git-version "0.0" revision commit))
-      (home-page "https://github.com/unioslo/mreg-cli")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference (url home-page) (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1kc74kbc1n8ixf07qk8lvfx3hkfqcmhxqvjxzhdzb7h1vpp8wmdb"))))
-      (inputs
-       `(("python-dateutil" ,python-dateutil)
-         ("python-prompt-toolkit@2" ,python-prompt-toolkit-2)
-         ("python-requests" ,python-requests)))
-      (build-system python-build-system)
-      (arguments
-       '(#:phases (modify-phases %standard-phases
-                    (replace 'check
-                      (lambda* (#:key outputs #:allow-other-keys)
-                        (let* ((out (assoc-ref outputs "out"))
-                               (mreg-cli (string-append out "/bin/mreg-cli")))
-                          (invoke mreg-cli "--playback" "testsuite-result.json"
-                                  ;; XXX: should probably not be necessary?
-                                  "-d" "example.org")))))))
-      (synopsis "Command-line interface for mreg")
-      (description
-       "@command{mreg-cli} is a command-line tool for working with the
+  (package
+    (name "mreg-cli")
+    (version "0.9.10")
+    (home-page "https://github.com/unioslo/mreg-cli")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page) (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0fb24qzh9j0a12kmwndv632314qqciz6ly8ws0awz3a2y7wvaixf"))))
+    (inputs
+     `(("python-dateutil" ,python-dateutil)
+       ("python-prompt-toolkit@2" ,python-prompt-toolkit-2)
+       ("python-requests" ,python-requests)))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (mreg-cli (string-append out "/bin/mreg-cli")))
+                        (invoke mreg-cli "--playback" "testsuite-result.json"
+                                "-d" "example.org")))))))
+    (synopsis "Command-line interface for mreg")
+    (description
+     "@command{mreg-cli} is a command-line tool for working with the
 @command{mreg} inventory system.")
-      (license gpl3+))))
+    (license gpl3+)))
