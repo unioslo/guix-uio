@@ -18,6 +18,7 @@
   #:use-module (guix gexp)
   #:use-module (gnu system shadow)
   #:use-module (gnu services)
+  #:use-module (gnu services databases)
   #:use-module (gnu services shepherd)
   #:use-module (gnu packages admin)
   #:use-module (uio packages monitoring)
@@ -25,7 +26,10 @@
   #:export (zabbix-auto-config-configuration
             zabbix-auto-config-configuration?
             zabbix-auto-config-configuration-package
-            zabbix-auto-config-configuration-config-directory
+            zabbix-auto-config-configuration-user
+            zabbix-auto-config-configuration-group
+            zabbix-auto-config-configuration-requirement
+            zabbix-auto-config-configuration-directory
             zabbix-auto-config-service-type))
 
 (define-record-type* <zabbix-auto-config-configuration>
@@ -34,26 +38,42 @@
   zabbix-auto-config-configuration?
   (package zabbix-auto-config-configuration-package
            (default zabbix-auto-config))
-  (requirement zabbix-auto-config-requirement
+  (user zabbix-auto-config-configuration-user
+        (default "zabbix-auto-config"))
+  (group zabbix-auto-config-configuration-group
+        (default "zabbix-auto-config"))
+  (requirement zabbix-auto-config-configuration-requirement
                ;; Note: Add postgres if using a local database.
                (default '(networking)))
-  (config-directory zabbix-auto-config-config-directory))
+  (directory zabbix-auto-config-configuration-directory))
 
-(define %zabbix-auto-config-accounts
-  (list (user-account
-         (name "zabbix-auto-config")
-         (group "zabbix-auto-config")
-         (system? #t)
-         (comment "zabbix-auto-config user")
-         (home-directory "/var/empty")
-         (shell (file-append shadow "/sbin/nologin")))
-        (user-group
-         (name "zabbix-auto-config")
-         (system? #t))))
+(define (zabbix-auto-config-accounts config)
+  (let ((user (zabbix-auto-config-configuration-user config))
+        (group (zabbix-auto-config-configuration-group config)))
+    (list (user-account
+           (name user)
+           (group group)
+           (system? #t)
+           (comment "zabbix-auto-config user")
+           (home-directory "/var/empty")
+           (shell (file-append shadow "/sbin/nologin")))
+          (user-group
+           (name group)
+           (system? #t)))))
+
+(define (zac-postgresql-role config)
+  (let ((user (zabbix-auto-config-configuration-user config)))
+    (list (postgresql-role
+           (name user)
+           (create-database? #t))
+          ;; XXX: For convenience, add a zabbix-server role too.
+          (postgresql-role
+           (name "zabbix")
+           (create-database? #t)))))
 
 (define zabbix-auto-config-shepherd-service
   (match-lambda
-    (($ <zabbix-auto-config-configuration> package requirement config-directory)
+    (($ <zabbix-auto-config-configuration> package user group requirement directory)
      (list
       (shepherd-service
        (documentation "Start the zabbix-auto-config service")
@@ -61,7 +81,7 @@
        (requirement requirement)
        (start #~(make-forkexec-constructor
                  (list #$(file-append package "/bin/zac"))
-                 #:directory #$config-directory
+                 #:directory #$directory
                  #:user "zabbix-auto-config"
                  #:group "zabbix-auto-config"
                  #:log-file "/var/log/zabbix-auto-config.log"))
@@ -74,7 +94,9 @@
     (list (service-extension shepherd-root-service-type
                              zabbix-auto-config-shepherd-service)
           (service-extension account-service-type
-                             (const %zabbix-auto-config-accounts))))
+                             zabbix-auto-config-accounts)
+          (service-extension postgresql-role-service-type
+                             zac-postgresql-role)))
    (description
     "Run the zabbix-auto-config service, which collects information from
 different sources and updates the Zabbix API accordingly.")))
