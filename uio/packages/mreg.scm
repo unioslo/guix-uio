@@ -25,8 +25,8 @@
   #:use-module (gnu packages time))
 
 (define-public mreg
-  (let ((commit "2257603514e025d12e27691d03638c1b7a735ddc")
-        (revision "0"))
+  (let ((commit "a8306c740be05c419c7abdf84cf13fd67161b9c0")
+        (revision "1"))
     (package
       (name "mreg")
       (version (git-version "0.0" revision commit))
@@ -37,7 +37,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0hljw05j22kv4h9id13zng7fiprc8ki3rpqj485qlswry9vibkjv"))))
+                  "1vpndgkqn3drgd5j6sda6szwrsd2x1s3w01y4mypl9d3yk8flhhh"))))
       (build-system python-build-system)
       (arguments
        '(#:phases (modify-phases %standard-phases
