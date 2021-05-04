@@ -75,7 +75,7 @@
                         (invoke "python" "manage.py" "test"))))))
       (native-inputs
        `(("postgresql" ,postgresql-11)))
-      (inputs
+      (propagated-inputs
        `(("python-django" ,python-django)
          ("python-djangorestframework" ,python-djangorestframework)
          ("python-django-auth-ldap" ,python-django-auth-ldap)
