@@ -1,4 +1,4 @@
-#+TITLE: guix-uio-free
+#+TITLE: guix-uio
 #+OPTIONS: toc:nil num:nil
 
 This is a Guix channel for packages used by UiO.
@@ -9,8 +9,8 @@ Create or modify the =~/.config/guix/channels.scm= file so it looks
 something like this:
 
 :  (cons (channel
-:         (name 'uio-free)
-:         (url "https://github.com/mbakke/guix-uio-free.git")
+:         (name 'uio)
+:         (url "https://github.com/mbakke/guix-uio.git")
 :         (branch "master"))
 :        %default-channels)
 
