@@ -1,0 +1,10 @@
+;; This file, which is best viewed as -*- Scheme -*-, lists the OpenPGP keys
+;; currently authorized to sign commits in this repository.
+
+(authorizations
+ (version 0)
+
+ (("BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA"
+   (name "mbakke-personal"))
+  ("4D4E 49EE DF36 DA31 0D9D  7734 E871 8BA5 9114 1077"
+   (name "mbakke-work"))))
