@@ -18,6 +18,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system python)
   #:use-module ((guix licenses) #:select (gpl3+))
+  #:use-module (gnu packages check)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages django)
   #:use-module (gnu packages python-web)
@@ -74,7 +75,8 @@
 
                         (invoke "python" "manage.py" "test"))))))
       (native-inputs
-       `(("postgresql" ,postgresql-11)))
+       `(("postgresql" ,postgresql-11)
+         ("python-mock" ,python-mock)))
       (propagated-inputs
        `(("python-django" ,python-django)
          ("python-djangorestframework" ,python-djangorestframework)
