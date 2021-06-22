@@ -1,4 +1,4 @@
-;;; Copyright © 2020 Marius Bakke <marius.bakke@usit.uio.no>
+;;; Copyright © 2020, 2021 Marius Bakke <marius.bakke@usit.uio.no>
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -26,8 +26,8 @@
   #:use-module (gnu packages time))
 
 (define-public mreg
-  (let ((commit "a8306c740be05c419c7abdf84cf13fd67161b9c0")
-        (revision "1"))
+  (let ((commit "0e9deb9f4c080ff30de6bc668f3751964fb6fc62")
+        (revision "2"))
     (package
       (name "mreg")
       (version (git-version "0.0" revision commit))
@@ -38,7 +38,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1vpndgkqn3drgd5j6sda6szwrsd2x1s3w01y4mypl9d3yk8flhhh"))))
+                  "101bxmp2gmr9lbahl1812c332cwkgrgfzzc4wjkgw13424dl9fvz"))))
       (build-system python-build-system)
       (arguments
        '(#:phases (modify-phases %standard-phases
