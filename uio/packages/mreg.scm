@@ -120,11 +120,14 @@ be delegated so that groups can manage only the networks they own.")
     (arguments
      '(#:phases (modify-phases %standard-phases
                   (replace 'check
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (mreg-cli (string-append out "/bin/mreg-cli")))
-                        (invoke mreg-cli "--playback" "testsuite-result.json"
-                                "-d" "example.org")))))))
+                    (lambda* (#:key tests? outputs #:allow-other-keys)
+                      (if tests?
+                          (let* ((out (assoc-ref outputs "out"))
+                                 (mreg-cli (string-append out "/bin/mreg-cli")))
+                            (invoke mreg-cli "--playback" "testsuite-result.json"
+                                    "-d" "example.org"))
+
+                          (format #t "test suite not run~%")))))))
     (synopsis "Command-line interface for mreg")
     (description
      "@command{mreg-cli} is a command-line tool for working with the
