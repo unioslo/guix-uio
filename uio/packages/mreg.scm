@@ -74,7 +74,7 @@
                               (substitute* "mregsite/settings.py"
                                 ((".*'(USER|PASSWORD)':.*")
                                  ""))
-                              (invoke "python" "manage.py" "test"))
+                              (invoke "python" "manage.py" "test" "-v2"))
 
                             (format #t "test suite not run~%")))))))
       (native-inputs
