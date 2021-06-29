@@ -64,16 +64,19 @@
                         (invoke "psql" "-d" "postgres" "-c"
                                 "CREATE DATABASE travisci;")))
                     (replace 'check
-                      (lambda _
-                        ;; Pretend to be the upstream CI system to piggy back on
-                        ;; the test project defined in settings.py ...
-                        (setenv "CI" "1")
-                        ;; ... but ignore the user and password setting.
-                        (substitute* "mregsite/settings.py"
-                          ((".*'(USER|PASSWORD)':.*")
-                           ""))
+                      (lambda* (#:key tests? #:allow-other-keys)
+                        (if tests?
+                            (begin
+                              ;; Pretend to be the upstream CI system to piggy back
+                              ;; on the test project defined in settings.py ...
+                              (setenv "CI" "1")
+                              ;; ... but ignore the user and password setting.
+                              (substitute* "mregsite/settings.py"
+                                ((".*'(USER|PASSWORD)':.*")
+                                 ""))
+                              (invoke "python" "manage.py" "test"))
 
-                        (invoke "python" "manage.py" "test"))))))
+                            (format #t "test suite not run~%")))))))
       (native-inputs
        `(("postgresql" ,postgresql)
          ("python-mock" ,python-mock)))
