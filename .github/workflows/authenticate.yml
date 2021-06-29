@@ -1,0 +1,23 @@
+on:
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+name: Authenticate
+jobs:
+  authenticate:
+    name: Authenticate commits
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install Guix
+        uses: PromyLOPH/guix-install-action@v1
+      - name: Authenticate
+        run: |
+          COMMIT=e346c14b72066b6347a3667d23d792ae664c0447
+          SIGNER="4D4E 49EE DF36 DA31 0D9D  7734 E871 8BA5 9114 1077"
+          guix git authenticate "$COMMIT" "$SIGNER"
