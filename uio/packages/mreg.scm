@@ -87,7 +87,6 @@
          ("python-django-logging-json" ,python-django-logging-json)
          ("python-django-netfields" ,python-django-netfields)
          ("python-django-url-filter" ,python-django-url-filter)
-         ("gunicorn" ,gunicorn)
          ("python-idna" ,python-idna)
          ("python-pika" ,python-pika)
          ("python-psycopg2" ,python-psycopg2)))
