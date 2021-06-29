@@ -26,8 +26,8 @@
   #:use-module (gnu packages time))
 
 (define-public mreg
-  (let ((commit "0e9deb9f4c080ff30de6bc668f3751964fb6fc62")
-        (revision "2"))
+  (let ((commit "db020d38bb36ca9cc050d1a7fd2a5f67be92d379")
+        (revision "3"))
     (package
       (name "mreg")
       (version (git-version "0.0" revision commit))
@@ -38,7 +38,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "101bxmp2gmr9lbahl1812c332cwkgrgfzzc4wjkgw13424dl9fvz"))))
+                  "00r33yvx834a6xwl0j3cjl1wyfjqk84dprnvbbfa9gfnzr6ifrvc"))))
       (build-system python-build-system)
       (arguments
        '(#:phases (modify-phases %standard-phases
@@ -65,17 +65,17 @@
                                 "CREATE DATABASE travisci;")))
                     (replace 'check
                       (lambda _
-                        ;; Pretend to be the Travis CI system to piggy back on
+                        ;; Pretend to be the upstream CI system to piggy back on
                         ;; the test project defined in settings.py ...
-                        (setenv "TRAVIS" "1")
-                        ;; ... but ignore the user and port setting.
+                        (setenv "CI" "1")
+                        ;; ... but ignore the user and password setting.
                         (substitute* "mregsite/settings.py"
-                          ((".*'(USER|PORT)':.*")
+                          ((".*'(USER|PASSWORD)':.*")
                            ""))
 
                         (invoke "python" "manage.py" "test"))))))
       (native-inputs
-       `(("postgresql" ,postgresql-11)
+       `(("postgresql" ,postgresql)
          ("python-mock" ,python-mock)))
       (propagated-inputs
        `(("python-django" ,python-django)
