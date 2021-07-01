@@ -26,8 +26,8 @@
   #:use-module (gnu packages time))
 
 (define-public mreg
-  (let ((commit "db020d38bb36ca9cc050d1a7fd2a5f67be92d379")
-        (revision "3"))
+  (let ((commit "0809a9350467387a4f5476875db8fb21e6f742a8")
+        (revision "4"))
     (package
       (name "mreg")
       (version (git-version "0.0" revision commit))
@@ -38,7 +38,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "00r33yvx834a6xwl0j3cjl1wyfjqk84dprnvbbfa9gfnzr6ifrvc"))))
+                  "11gl81f44ss79wzqb1nd0nzjzybl27afcqy5s2crvw9g419z2pl9"))))
       (build-system python-build-system)
       (arguments
        '(#:phases (modify-phases %standard-phases
@@ -60,20 +60,13 @@
                         (invoke "initdb" "-D" "/tmp/db")
                         (invoke "pg_ctl" "-D" "/tmp/db" "-l" "/tmp/db.log" "start")
 
-                        (invoke "psql" "-c" "CREATE EXTENSION citext;" "template1")
-                        (invoke "psql" "-d" "postgres" "-c"
-                                "CREATE DATABASE travisci;")))
+                        (invoke "psql" "-c" "CREATE EXTENSION citext;" "template1")))
                     (replace 'check
                       (lambda* (#:key tests? #:allow-other-keys)
                         (if tests?
                             (begin
-                              ;; Pretend to be the upstream CI system to piggy back
-                              ;; on the test project defined in settings.py ...
-                              (setenv "CI" "1")
-                              ;; ... but ignore the user and password setting.
-                              (substitute* "mregsite/settings.py"
-                                ((".*'(USER|PASSWORD)':.*")
-                                 ""))
+                              (setenv "MREG_DB_USER" "")
+                              (setenv "MREG_DB_HOST" "")
                               (invoke "python" "manage.py" "test" "-v2"))
 
                             (format #t "test suite not run~%")))))))
