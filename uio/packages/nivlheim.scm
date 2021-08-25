@@ -182,7 +182,7 @@ Go programming language.")
        ("github.com/lib/pq" ,go-github-com-lib-pq)
        ("github.com/go-asn1-ber/asn1-ber" ,go-github-com-go-asn1-ber-asn1-ber)
        ("golang.org/x/net" ,go-golang-org-x-net)
-       ("golang/org/x/oauth2" ,go-golang-org-x-oauth2)
+       ("golang.org/x/oauth2" ,go-golang-org-x-oauth2)
        ("gopkg.in/ldap.v3" ,go-gopkg.in-ldap.v3)))
     (synopsis "Collect information from servers")
     (description
