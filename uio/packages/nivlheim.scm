@@ -146,25 +146,35 @@ Go programming language.")
        #:import-path "github.com/unioslo/nivlheim/server/service"
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-test
-           (lambda _
-             (substitute*
-                 "src/github.com/unioslo/nivlheim/server/service/testingUtilities.go"
-               ;; Connect to Postgres using TCP instead of a Unix socket.
-               (("host=/var/run/postgresql")
-                "host=127.0.0.1 port=5432"))
-             #t))
-         (add-before 'check 'prepare-tests
-           (lambda _
-             (mkdir-p "/tmp/db")
-             (invoke "initdb" "-D" "/tmp/db")
-             (invoke "pg_ctl" "-D" "/tmp/db" "-l" "/tmp/db.log" "start")
-             (invoke "psql" "-d" "postgres" "-c"
-                     "CREATE DATABASE nixbld;")
+	 (add-after 'unpack 'patch-test
+	   (lambda _
+	     (substitute*
+		 "src/github.com/unioslo/nivlheim/server/service/testingUtilities.go"
+	       ;; Connect to Postgres using TCP instead of a Unix socket.
+	       (("host=/var/run/postgresql")
+		"host=127.0.0.1 port=5432"))))
+	 (add-before 'check 'prepare-tests
+	   (lambda _
+	     (mkdir-p "/tmp/db")
+	     (invoke "initdb" "-D" "/tmp/db")
+	     (invoke "pg_ctl" "-D" "/tmp/db" "-l" "/tmp/db.log" "start")
+	     (invoke "psql" "-d" "postgres" "-c"
+		     "CREATE DATABASE nixbld;")
 
-             ;; Disable tests that require network access.
-             (setenv "NONETWORK" "indeed")
-             #t)))))
+	     ;; Disable tests that require network access.
+	     (setenv "NONETWORK" "indeed")))
+	 (add-after 'install 'rename-executable
+	   (lambda* (#:key outputs #:allow-other-keys)
+	     (let ((out (assoc-ref outputs "out")))
+	       (with-directory-excursion (string-append out "/bin")
+		 (rename-file "service" "nivlheim")))))
+	 (add-after 'unpack 'install-installdb
+	   ;; Install this early before go-build-system changes directory.
+	   (lambda* (#:key outputs #:allow-other-keys)
+	     (let* ((out (assoc-ref outputs "out"))
+		    (share (string-append out "/share/nivlheim")))
+	       (mkdir-p (dirname share))
+	       (copy-recursively "src/github.com/unioslo/nivlheim/server" share)))))))
     (native-inputs
      `(("postgresql" ,postgresql)))
     (inputs
