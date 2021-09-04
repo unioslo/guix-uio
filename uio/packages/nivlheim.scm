@@ -1,4 +1,4 @@
-;;; Copyright © 2020 Marius Bakke <marius.bakke@usit.uio.no>
+;;; Copyright © 2020, 2021 Marius Bakke <marius.bakke@usit.uio.no>
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -20,7 +20,10 @@
   #:use-module ((guix licenses) #:select (gpl3+ expat))
   #:use-module (gnu packages databases)
   #:use-module (gnu packages golang)
-  #:use-module (gnu packages syncthing))
+  #:use-module (gnu packages networking)
+  #:use-module (gnu packages perl)
+  #:use-module (gnu packages syncthing)
+  #:use-module (gnu packages web))
 
 ;; TODO: Upstream these dependencies.
 
@@ -140,6 +143,7 @@ Go programming language.")
                (base32
                 "1fw7v1xa6qik4nisshm837rkp05yzsisr5cwy7kv8495bzc3zykr"))))
     (build-system go-build-system)
+    (outputs '("out" "client"))
     (arguments
      `(#:install-source? #f
        #:unpack-path "github.com/unioslo/nivlheim"
@@ -164,11 +168,22 @@ Go programming language.")
 
 	     ;; Disable tests that require network access.
 	     (setenv "NONETWORK" "indeed")))
-	 (add-after 'install 'rename-executable
+	 (add-after 'install 'rename-server
 	   (lambda* (#:key outputs #:allow-other-keys)
 	     (let ((out (assoc-ref outputs "out")))
 	       (with-directory-excursion (string-append out "/bin")
-		 (rename-file "service" "nivlheim"))))))))
+		 (rename-file "service" "nivlheim")))))
+         (add-after 'install 'install-client
+           (lambda* (#:key outputs unpack-path #:allow-other-keys)
+             (let ((client (assoc-ref outputs "client")))
+	       (with-directory-excursion (string-append "src/" unpack-path)
+                 (substitute* "client/nivlheim_client"
+                   (("VERSION = '0\\.0\\.0'")
+                    (string-append "VERSION = '" ,version "'")))
+                 (install-file "client/nivlheim_client"
+                               (string-append client "/bin"))
+                 (wrap-program (string-append client "/bin/nivlheim_client")
+                   `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))))))))))
     (native-inputs
      `(("postgresql" ,postgresql)))
     (inputs
@@ -177,7 +192,14 @@ Go programming language.")
        ("github.com/go-asn1-ber/asn1-ber" ,go-github-com-go-asn1-ber-asn1-ber)
        ("golang.org/x/net" ,go-golang-org-x-net)
        ("golang.org/x/oauth2" ,go-golang-org-x-oauth2)
-       ("gopkg.in/ldap.v3" ,go-gopkg.in-ldap.v3)))
+       ("gopkg.in/ldap.v3" ,go-gopkg.in-ldap.v3)
+
+       ;; For the client.
+       ("perl" ,perl)
+       ("perl-http-message" ,perl-http-message)
+       ("perl-io-socket-inet6" ,perl-io-socket-inet6)
+       ("perl-io-socket-ssl" ,perl-io-socket-ssl)
+       ("perl-net-dns" ,perl-net-dns)))
     (synopsis "Collect information from servers")
     (description
      "Nivlheim is a system for collecting key information from remote
