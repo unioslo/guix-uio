@@ -141,9 +141,10 @@ Go programming language.")
                 "1fw7v1xa6qik4nisshm837rkp05yzsisr5cwy7kv8495bzc3zykr"))))
     (build-system go-build-system)
     (arguments
-     '(#:install-source? #f
+     `(#:install-source? #f
        #:unpack-path "github.com/unioslo/nivlheim"
        #:import-path "github.com/unioslo/nivlheim/server/service"
+       #:build-flags (list (string-append "-ldflags=-X main.version=" ,version))
        #:phases
        (modify-phases %standard-phases
 	 (add-after 'unpack 'patch-test
