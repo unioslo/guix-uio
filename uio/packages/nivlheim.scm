@@ -168,14 +168,7 @@ Go programming language.")
 	   (lambda* (#:key outputs #:allow-other-keys)
 	     (let ((out (assoc-ref outputs "out")))
 	       (with-directory-excursion (string-append out "/bin")
-		 (rename-file "service" "nivlheim")))))
-	 (add-after 'unpack 'install-installdb
-	   ;; Install this early before go-build-system changes directory.
-	   (lambda* (#:key outputs #:allow-other-keys)
-	     (let* ((out (assoc-ref outputs "out"))
-		    (share (string-append out "/share/nivlheim")))
-	       (mkdir-p (dirname share))
-	       (copy-recursively "src/github.com/unioslo/nivlheim/server" share)))))))
+		 (rename-file "service" "nivlheim"))))))))
     (native-inputs
      `(("postgresql" ,postgresql)))
     (inputs
