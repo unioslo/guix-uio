@@ -133,7 +133,7 @@ Go programming language.")
 (define-public nivlheim
   (package
     (name "nivlheim")
-    (version "2.7.3")
+    (version "2.7.10")
     (home-page "https://github.com/unioslo/nivlheim")
     (source (origin
               (method git-fetch)
@@ -141,7 +141,7 @@ Go programming language.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fw7v1xa6qik4nisshm837rkp05yzsisr5cwy7kv8495bzc3zykr"))))
+                "0gi0iv4f0jkfsshay3h5yjw9fpyq8gapq95q38va3rxxw83gcd4j"))))
     (build-system go-build-system)
     (outputs '("out" "client"))
     (arguments
