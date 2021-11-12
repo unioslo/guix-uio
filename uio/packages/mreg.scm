@@ -82,7 +82,11 @@
          ("python-django-url-filter" ,python-django-url-filter)
          ("python-idna" ,python-idna)
          ("python-pika" ,python-pika)
-         ("python-psycopg2" ,python-psycopg2)))
+         ("python-psycopg2" ,python-psycopg2)
+
+         ;; For OpenAPI support.
+         ("python-uritemplate" ,python-uritemplate)
+         ("python-pyyaml" ,python-pyyaml)))
       (synopsis "Machine inventory system")
       (description
        "@command{mreg} is a RESTful API for managing DNS zones, networks,
