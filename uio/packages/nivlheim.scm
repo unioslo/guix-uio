@@ -163,9 +163,11 @@ Go programming language.")
 	   (lambda _
 	     (mkdir-p "/tmp/db")
 	     (invoke "initdb" "-D" "/tmp/db")
-	     (invoke "pg_ctl" "-D" "/tmp/db" "-l" "/tmp/db.log" "start")
-	     (invoke "psql" "-d" "postgres" "-c"
-		     "CREATE DATABASE nixbld;")
+	     (invoke "pg_ctl" "-D" "/tmp/db"
+                     "-o" "-k /tmp"
+                     "-l" "db.log" "start")
+	     (invoke "psql" "-h" "/tmp" "-d" "postgres"
+                     "-c" "CREATE DATABASE nixbld;")
 
 	     ;; Disable tests that require network access.
 	     (setenv "NONETWORK" "indeed")))

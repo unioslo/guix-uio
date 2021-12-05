@@ -58,15 +58,20 @@
                       (lambda _
                         (mkdir-p "/tmp/db")
                         (invoke "initdb" "-D" "/tmp/db")
-                        (invoke "pg_ctl" "-D" "/tmp/db" "-l" "/tmp/db.log" "start")
+                        (invoke "pg_ctl" "-D" "/tmp/db"
+                                "-o" "-k /tmp" ;socket directory
+                                "-l" "db.log"
+                                "start")
 
-                        (invoke "psql" "-c" "CREATE EXTENSION citext;" "template1")))
+                        (invoke "psql" "-h" "/tmp"
+                                "-c" "CREATE EXTENSION citext;"
+                                "template1")))
                     (replace 'check
                       (lambda* (#:key tests? #:allow-other-keys)
                         (if tests?
                             (begin
                               (setenv "MREG_DB_USER" "")
-                              (setenv "MREG_DB_HOST" "")
+                              (setenv "MREG_DB_HOST" "/tmp")
                               (invoke "python" "manage.py" "test" "-v2"))
 
                             (format #t "test suite not run~%")))))))
