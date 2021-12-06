@@ -10,7 +10,7 @@ something like this:
 
 :  (cons (channel
 :         (name 'uio)
-:         (url "https://github.com/mbakke/guix-uio.git")
+:         (url "https://github.com/unioslo/guix-uio.git")
 :         (branch "master")
 :         (introduction
 :          (make-channel-introduction
