@@ -202,7 +202,8 @@ Go programming language.")
        ("perl-http-message" ,perl-http-message)
        ("perl-io-socket-inet6" ,perl-io-socket-inet6)
        ("perl-io-socket-ssl" ,perl-io-socket-ssl)
-       ("perl-net-dns" ,perl-net-dns)))
+       ("perl-net-dns" ,perl-net-dns)
+       ("perl-yaml-libyaml" ,perl-yaml-libyaml)))
     (synopsis "Collect information from servers")
     (description
      "Nivlheim is a system for collecting key information from remote
