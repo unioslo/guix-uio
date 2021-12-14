@@ -149,10 +149,6 @@ Go programming language.")
      (list #:install-source? #f
            #:unpack-path "github.com/unioslo/nivlheim"
            #:import-path "github.com/unioslo/nivlheim/server/service"
-           ;; Note: the GUIX_NIVLHEIM_VERSION variable can be set outside of
-           ;; Guix and is here to work around the fact that transformations
-           ;; on the command line (such as --with-commit) does not change
-           ;; the version known to the builder.
            #:build-flags #~(list (string-append "-ldflags=-X main.version="
                                                 #$(package-version this-package)))
            #:go go-1.16
