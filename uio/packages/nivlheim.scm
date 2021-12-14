@@ -17,6 +17,7 @@
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix build-system go)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:select (gpl3+ expat))
   #:use-module (gnu packages databases)
   #:use-module (gnu packages golang)
@@ -145,48 +146,50 @@ Go programming language.")
     (build-system go-build-system)
     (outputs '("out" "client"))
     (arguments
-     `(#:install-source? #f
-       #:unpack-path "github.com/unioslo/nivlheim"
-       #:import-path "github.com/unioslo/nivlheim/server/service"
-       #:build-flags (list (string-append "-ldflags=-X main.version=" ,version))
-       #:go ,go-1.16
-       #:phases
-       (modify-phases %standard-phases
-	 (add-after 'unpack 'patch-test
-	   (lambda _
-	     (substitute*
-		 "src/github.com/unioslo/nivlheim/server/service/testingUtilities.go"
-	       ;; Connect to Postgres using TCP instead of a Unix socket.
-	       (("host=/var/run/postgresql")
-		"host=127.0.0.1 port=5432"))))
-	 (add-before 'check 'prepare-tests
-	   (lambda _
-	     (mkdir-p "/tmp/db")
-	     (invoke "initdb" "-D" "/tmp/db")
-	     (invoke "pg_ctl" "-D" "/tmp/db"
-                     "-o" "-k /tmp"
-                     "-l" "db.log" "start")
-	     (invoke "psql" "-h" "/tmp" "-d" "postgres"
-                     "-c" "CREATE DATABASE nixbld;")
+     (list #:install-source? #f
+           #:unpack-path "github.com/unioslo/nivlheim"
+           #:import-path "github.com/unioslo/nivlheim/server/service"
+           #:build-flags #~(list (string-append "-ldflags=-X main.version="
+                                                #$version))
+           #:go go-1.16
+           #:phases
+           #~(modify-phases %standard-phases
+	     (add-after 'unpack 'patch-test
+	       (lambda _
+	         (substitute*
+		     "src/github.com/unioslo/nivlheim/server/service/testingUtilities.go"
+	           ;; Connect to Postgres using TCP instead of a Unix socket.
+	           (("host=/var/run/postgresql")
+		    "host=127.0.0.1 port=5432"))))
+	     (add-before 'check 'prepare-tests
+	       (lambda _
+	         (mkdir-p "/tmp/db")
+	         (invoke "initdb" "-D" "/tmp/db")
+	         (invoke "pg_ctl" "-D" "/tmp/db"
+                         "-o" "-k /tmp"
+                         "-l" "db.log" "start")
+	         (invoke "psql" "-h" "/tmp" "-d" "postgres"
+                         "-c" "CREATE DATABASE nixbld;")
+                 (setenv "FOO" "bar")
 
-	     ;; Disable tests that require network access.
-	     (setenv "NONETWORK" "indeed")))
-	 (add-after 'install 'rename-server
-	   (lambda* (#:key outputs #:allow-other-keys)
-	     (let ((out (assoc-ref outputs "out")))
-	       (with-directory-excursion (string-append out "/bin")
-		 (rename-file "service" "nivlheim")))))
-         (add-after 'install 'install-client
-           (lambda* (#:key outputs unpack-path #:allow-other-keys)
-             (let ((client (assoc-ref outputs "client")))
-	       (with-directory-excursion (string-append "src/" unpack-path)
-                 (substitute* "client/nivlheim_client"
-                   (("VERSION = '0\\.0\\.0'")
-                    (string-append "VERSION = '" ,version "'")))
-                 (install-file "client/nivlheim_client"
-                               (string-append client "/bin"))
-                 (wrap-program (string-append client "/bin/nivlheim_client")
-                   `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))))))))))
+	         ;; Disable tests that require network access.
+	         (setenv "NONETWORK" "indeed")))
+	     (add-after 'install 'rename-server
+	       (lambda* (#:key outputs #:allow-other-keys)
+	         (let ((out (assoc-ref outputs "out")))
+	           (with-directory-excursion (string-append out "/bin")
+		     (rename-file "service" "nivlheim")))))
+             (add-after 'install 'install-client
+               (lambda* (#:key outputs unpack-path #:allow-other-keys)
+                 (let ((client (assoc-ref outputs "client")))
+	           (with-directory-excursion (string-append "src/" unpack-path)
+                     (substitute* "client/nivlheim_client"
+                       (("VERSION = '0\\.0\\.0'")
+                        (string-append "VERSION = '" #$version "'")))
+                     (install-file "client/nivlheim_client"
+                                   (string-append client "/bin"))
+                     (wrap-program (string-append client "/bin/nivlheim_client")
+                       `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))))))))))
     (native-inputs
      `(("postgresql" ,postgresql)))
     (inputs
