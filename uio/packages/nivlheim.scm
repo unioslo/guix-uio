@@ -154,8 +154,7 @@ Go programming language.")
            ;; on the command line (such as --with-commit) does not change
            ;; the version known to the builder.
            #:build-flags #~(list (string-append "-ldflags=-X main.version="
-                                                #$(or (getenv "GUIX_NIVLHEIM_VERSION")
-                                                      version)))
+                                                #$(package-version this-package)))
            #:go go-1.16
            #:phases
            #~(modify-phases %standard-phases
@@ -186,7 +185,7 @@ Go programming language.")
              (add-after 'install 'install-client
                (lambda* (#:key outputs unpack-path #:allow-other-keys)
                  (let ((client (assoc-ref outputs "client"))
-                       (version #$(or (getenv "GUIX_NIVLHEIM_VERSION") version)))
+                       (version #$(package-version this-package)))
 	           (with-directory-excursion (string-append "src/" unpack-path)
                      (substitute* "client/nivlheim_client"
                        (("VERSION = '0\\.0\\.0'")
