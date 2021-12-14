@@ -175,7 +175,6 @@ Go programming language.")
                          "-l" "db.log" "start")
 	         (invoke "psql" "-h" "/tmp" "-d" "postgres"
                          "-c" "CREATE DATABASE nixbld;")
-                 (setenv "FOO" "bar")
 
 	         ;; Disable tests that require network access.
 	         (setenv "NONETWORK" "indeed")))
