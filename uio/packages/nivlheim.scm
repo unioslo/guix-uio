@@ -149,8 +149,13 @@ Go programming language.")
      (list #:install-source? #f
            #:unpack-path "github.com/unioslo/nivlheim"
            #:import-path "github.com/unioslo/nivlheim/server/service"
+           ;; Note: the GUIX_NIVLHEIM_VERSION variable can be set outside of
+           ;; Guix and is here to work around the fact that transformations
+           ;; on the command line (such as --with-commit) does not change
+           ;; the version known to the builder.
            #:build-flags #~(list (string-append "-ldflags=-X main.version="
-                                                #$version))
+                                                #$(or (getenv "GUIX_NIVLHEIM_VERSION")
+                                                      version)))
            #:go go-1.16
            #:phases
            #~(modify-phases %standard-phases
@@ -181,11 +186,12 @@ Go programming language.")
 		     (rename-file "service" "nivlheim")))))
              (add-after 'install 'install-client
                (lambda* (#:key outputs unpack-path #:allow-other-keys)
-                 (let ((client (assoc-ref outputs "client")))
+                 (let ((client (assoc-ref outputs "client"))
+                       (version #$(or (getenv "GUIX_NIVLHEIM_VERSION") version)))
 	           (with-directory-excursion (string-append "src/" unpack-path)
                      (substitute* "client/nivlheim_client"
                        (("VERSION = '0\\.0\\.0'")
-                        (string-append "VERSION = '" #$version "'")))
+                        (string-append "VERSION = '" version "'")))
                      (install-file "client/nivlheim_client"
                                    (string-append client "/bin"))
                      (wrap-program (string-append client "/bin/nivlheim_client")
