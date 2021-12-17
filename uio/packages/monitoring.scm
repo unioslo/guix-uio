@@ -1,4 +1,4 @@
-;;; Copyright © 2020 Marius Bakke <marius.bakke@usit.uio.no>
+;;; Copyright © 2020, 2021 Marius Bakke <marius.bakke@usit.uio.no>
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -20,11 +20,12 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages monitoring)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz))
 
 (define-public zabbix-auto-config
-  (let ((commit "7b2be24fbb3b13cb898fad31ce71913521904a53")
-        (revision "0"))
+  (let ((commit "f755648587c0e2c8c458358d69476a3c5d0d55a7")
+        (revision "1"))
     (package
       (name "zabbix-auto-config")
       (version (git-version "0.0.0" revision commit))
@@ -35,21 +36,21 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0dxbgz0m7m1r7s6zj6d10z6pfr2lnv1cmmh3zq63a5i0hnn9v905"))))
+                  "0h2nvcgv5zky0y407dcy87yn6g06sn0l71gzwpb2cr50wfs5xc27"))))
       (build-system python-build-system)
       (arguments
-       '(#:tests? #f                    ;no tests
-         #:phases (modify-phases %standard-phases
-                    (add-after 'unpack 'patch
-                      (lambda _
-                        (substitute* "setup.py"
-                          ;; Permit newer versions of PyZabbix.
-                          (("pyzabbix==0\\.7\\.5")
-                           "pyzabbix")))))))
+       '(#:phases (modify-phases %standard-phases
+                    (replace 'check
+                      (lambda* (#:key tests? #:allow-other-keys)
+                        (when tests?
+                          (invoke "python" "-m" "unittest" "discover"
+                                  "-v" "tests")))))))
       (inputs
        `(("python-multiprocessing-logging" ,python-multiprocessing-logging)
+         ("python-pydantic" ,python-pydantic)
          ("python-psycopg2" ,python-psycopg2)
-         ("python-pyzabbix" ,python-pyzabbix)))
+         ("python-pyzabbix" ,python-pyzabbix)
+         ("python-requests" ,python-requests)))
       (synopsis "Automate Zabbix configuration")
       (description
        "zabbix-auto-config (@command{zac}) is a tool to collect information
