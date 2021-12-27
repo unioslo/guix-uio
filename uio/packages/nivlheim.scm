@@ -151,7 +151,6 @@ Go programming language.")
            #:import-path "github.com/unioslo/nivlheim/server/service"
            #:build-flags #~(list (string-append "-ldflags=-X main.version="
                                                 #$(package-version this-package)))
-           #:go go-1.16
            #:phases
            #~(modify-phases %standard-phases
 	     (add-after 'unpack 'patch-test
