@@ -1,4 +1,4 @@
-;;; Copyright © 2020, 2021 Marius Bakke <marius.bakke@usit.uio.no>
+;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius.bakke@usit.uio.no>
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system python)
   #:use-module ((guix licenses) #:select (gpl3+))
+  #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages django)
@@ -91,7 +92,11 @@
 
          ;; For OpenAPI support.
          ("python-uritemplate" ,python-uritemplate)
-         ("python-pyyaml" ,python-pyyaml)))
+         ("python-pyyaml" ,python-pyyaml)
+
+         ;; Ensure 'tzdata' is available for users of mreg such
+         ;; that timezone functionality works in Django 4.0+.
+         ("tzdata" ,tzdata)))
       (synopsis "Machine inventory system")
       (description
        "@command{mreg} is a RESTful API for managing DNS zones, networks,
