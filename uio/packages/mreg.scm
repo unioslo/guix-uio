@@ -77,26 +77,25 @@
 
                             (format #t "test suite not run~%")))))))
       (native-inputs
-       `(("postgresql" ,postgresql)
-         ("python-mock" ,python-mock)))
+       (list postgresql python-mock))
       (propagated-inputs
-       `(("python-django" ,python-django)
-         ("python-djangorestframework" ,python-djangorestframework)
-         ("python-django-auth-ldap" ,python-django-auth-ldap)
-         ("python-django-logging-json" ,python-django-logging-json)
-         ("python-django-netfields" ,python-django-netfields)
-         ("python-django-url-filter" ,python-django-url-filter)
-         ("python-idna" ,python-idna)
-         ("python-pika" ,python-pika)
-         ("python-psycopg2" ,python-psycopg2)
+       (list python-django
+             python-django-rest-framework
+             python-django-auth-ldap
+             python-django-logging-json
+             python-django-netfields
+             python-django-url-filter
+             python-idna
+             python-pika
+             python-psycopg2
 
-         ;; For OpenAPI support.
-         ("python-uritemplate" ,python-uritemplate)
-         ("python-pyyaml" ,python-pyyaml)
+             ;; Ensure 'tzdata' is available for users of mreg such
+             ;; that timezone functionality works in Django 4.0+.
+             tzdata
 
-         ;; Ensure 'tzdata' is available for users of mreg such
-         ;; that timezone functionality works in Django 4.0+.
-         ("tzdata" ,tzdata)))
+             ;; For OpenAPI support.
+             python-uritemplate
+             python-pyyaml))
       (synopsis "Machine inventory system")
       (description
        "@command{mreg} is a RESTful API for managing DNS zones, networks,
@@ -119,9 +118,7 @@ be delegated so that groups can manage only the networks they own.")
                (base32
                 "0qdmysjmpbz7z93bbf6vdzkadqqqprvrm3l75q5r6x9km7v34q5m"))))
     (inputs
-     `(("python-dateutil" ,python-dateutil)
-       ("python-prompt-toolkit@2" ,python-prompt-toolkit-2)
-       ("python-requests" ,python-requests)))
+     (list python-dateutil python-prompt-toolkit-2 python-requests))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
