@@ -19,7 +19,6 @@
   #:use-module (guix build-system python)
   #:use-module ((guix licenses) #:select (gpl3+))
   #:use-module (gnu packages base)
-  #:use-module (gnu packages check)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages django)
   #:use-module (gnu packages python-web)
@@ -27,8 +26,8 @@
   #:use-module (gnu packages time))
 
 (define-public mreg
-  (let ((commit "db0062c7c77c2335076b00863d86b9236c4cfa6d")
-        (revision "5"))
+  (let ((commit "f7ad8c5185bd84f08d3b56a2a1030a52367d3c2b")
+        (revision "6"))
     (package
       (name "mreg")
       (version (git-version "0.0" revision commit))
@@ -39,7 +38,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0hhgc5bkn3najg05idnjpdrnq3lp27xfdwahhvwfmn4r3g9cs3fb"))))
+                  "06ih2x43iqws5cp6wcjsvpg1g12wkda2pfm3i2wq717pkpmjlyks"))))
       (build-system python-build-system)
       (arguments
        '(#:phases (modify-phases %standard-phases
@@ -77,7 +76,7 @@
 
                             (format #t "test suite not run~%")))))))
       (native-inputs
-       (list postgresql python-mock))
+       (list postgresql))
       (propagated-inputs
        (list python-django
              python-django-rest-framework
