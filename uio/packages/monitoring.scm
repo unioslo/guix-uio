@@ -1,4 +1,4 @@
-;;; Copyright © 2020, 2021 Marius Bakke <marius.bakke@usit.uio.no>
+;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius.bakke@usit.uio.no>
 ;;;
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by
@@ -24,8 +24,8 @@
   #:use-module (gnu packages python-xyz))
 
 (define-public zabbix-auto-config
-  (let ((commit "f755648587c0e2c8c458358d69476a3c5d0d55a7")
-        (revision "1"))
+  (let ((commit "92f6458481ac3a17d8553c1076263d550fbb781a")
+        (revision "2"))
     (package
       (name "zabbix-auto-config")
       (version (git-version "0.0.0" revision commit))
@@ -36,7 +36,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0h2nvcgv5zky0y407dcy87yn6g06sn0l71gzwpb2cr50wfs5xc27"))))
+                  "0fsa0licvg6ji6sq1qfca5splbr6j228hpmcrf7fc2zg0smw7v28"))))
       (build-system python-build-system)
       (arguments
        '(#:phases (modify-phases %standard-phases
