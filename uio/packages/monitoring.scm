@@ -46,11 +46,8 @@
                           (invoke "python" "-m" "unittest" "discover"
                                   "-v" "tests")))))))
       (inputs
-       `(("python-multiprocessing-logging" ,python-multiprocessing-logging)
-         ("python-pydantic" ,python-pydantic)
-         ("python-psycopg2" ,python-psycopg2)
-         ("python-pyzabbix" ,python-pyzabbix)
-         ("python-requests" ,python-requests)))
+       (list python-multiprocessing-logging python-pydantic python-psycopg2
+             python-pyzabbix python-requests))
       (synopsis "Automate Zabbix configuration")
       (description
        "zabbix-auto-config (@command{zac}) is a tool to collect information
