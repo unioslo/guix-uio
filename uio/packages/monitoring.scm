@@ -20,15 +20,17 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages monitoring)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz))
 
 (define-public zabbix-auto-config
-  (let ((commit "92f6458481ac3a17d8553c1076263d550fbb781a")
-        (revision "2"))
+  (let ((commit "8a31a749c425d7ff47e70ac87aca33c0b9698187")
+        (revision "0"))
     (package
       (name "zabbix-auto-config")
-      (version (git-version "0.0.0" revision commit))
+      (version (git-version "0.1.0" revision commit))
       (home-page "https://github.com/unioslo/zabbix-auto-config")
       (source (origin
                 (method git-fetch)
@@ -36,7 +38,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0fsa0licvg6ji6sq1qfca5splbr6j228hpmcrf7fc2zg0smw7v28"))))
+                  "1xiy91hw6jikwzr2734wl30ndf2mlrs96ipibrvaq5mki0z6aj4n"))))
       (build-system python-build-system)
       (arguments
        '(#:phases (modify-phases %standard-phases
@@ -47,7 +49,9 @@
                                   "-v" "tests")))))))
       (inputs
        (list python-multiprocessing-logging python-pydantic python-psycopg2
-             python-pyzabbix python-requests))
+             python-pyzabbix python-requests python-tomli))
+      (native-inputs
+       (list python-pytest))
       (synopsis "Automate Zabbix configuration")
       (description
        "zabbix-auto-config (@command{zac}) is a tool to collect information
