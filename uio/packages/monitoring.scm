@@ -26,8 +26,8 @@
   #:use-module (gnu packages python-xyz))
 
 (define-public zabbix-auto-config
-  (let ((commit "8a31a749c425d7ff47e70ac87aca33c0b9698187")
-        (revision "0"))
+  (let ((commit "cfe0cd8be457acba875fa974989ba40f33dd0ef7")
+        (revision "1"))
     (package
       (name "zabbix-auto-config")
       (version (git-version "0.1.0" revision commit))
@@ -38,7 +38,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1xiy91hw6jikwzr2734wl30ndf2mlrs96ipibrvaq5mki0z6aj4n"))))
+                  "0vby0n30v0slr9jmlgrczzlp217nsbn10687zxy9fvmnz5yd936y"))))
       (build-system python-build-system)
       (arguments
        '(#:phases (modify-phases %standard-phases
