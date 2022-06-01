@@ -117,7 +117,7 @@ be delegated so that groups can manage only the networks they own.")
                (base32
                 "0qdmysjmpbz7z93bbf6vdzkadqqqprvrm3l75q5r6x9km7v34q5m"))))
     (inputs
-     (list python-dateutil python-prompt-toolkit-2 python-requests))
+     (list python-dateutil python-prompt-toolkit python-requests))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
