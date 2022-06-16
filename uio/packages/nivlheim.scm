@@ -18,6 +18,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system go)
   #:use-module (guix gexp)
+  #:use-module (guix search-paths)
   #:use-module ((guix licenses) #:select (gpl3+ expat))
   #:use-module (gnu packages databases)
   #:use-module (gnu packages golang)
@@ -189,6 +190,9 @@ Go programming language.")
                                    (string-append client "/bin"))
                      (wrap-program (string-append client "/bin/nivlheim_client")
                        `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))))))))))
+    (native-search-paths
+     ;; Automatically configure these variables when a CA bundle is available.
+     (list $SSL_CERT_DIR $SSL_CERT_FILE))
     (native-inputs
      `(("postgresql" ,postgresql)))
     (inputs
