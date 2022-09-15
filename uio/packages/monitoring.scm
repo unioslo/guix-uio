@@ -26,8 +26,8 @@
   #:use-module (gnu packages python-xyz))
 
 (define-public zabbix-auto-config
-  (let ((commit "cfe0cd8be457acba875fa974989ba40f33dd0ef7")
-        (revision "1"))
+  (let ((commit "8b7df1f1b8fb029cb19ba0b4f42f6d00c73a7954")
+        (revision "2"))
     (package
       (name "zabbix-auto-config")
       (version (git-version "0.1.0" revision commit))
@@ -38,15 +38,14 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0vby0n30v0slr9jmlgrczzlp217nsbn10687zxy9fvmnz5yd936y"))))
+                  "1pqzz2yx5l5xki3rmpfd05bjk36pqlp3an4794902wg4yxjyjr6i"))))
       (build-system python-build-system)
       (arguments
        '(#:phases (modify-phases %standard-phases
                     (replace 'check
                       (lambda* (#:key tests? #:allow-other-keys)
                         (when tests?
-                          (invoke "python" "-m" "unittest" "discover"
-                                  "-v" "tests")))))))
+                          (invoke "pytest" "-vv")))))))
       (inputs
        (list python-multiprocessing-logging python-pydantic python-psycopg2
              python-pyzabbix python-requests python-tomli))
