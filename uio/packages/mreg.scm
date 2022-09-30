@@ -107,7 +107,7 @@ be delegated so that groups can manage only the networks they own.")
 (define-public mreg-cli
   (package
     (name "mreg-cli")
-    (version "0.9.10-21-g8d713fd")
+    (version "0.9.10-40-g42e77f9")
     (home-page "https://github.com/unioslo/mreg-cli")
     (source (origin
               (method git-fetch)
@@ -115,9 +115,12 @@ be delegated so that groups can manage only the networks they own.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qdmysjmpbz7z93bbf6vdzkadqqqprvrm3l75q5r6x9km7v34q5m"))))
+                "0vq9r7wgxiwhgndlikczy4w4mqlf09506fcxyhc2brzjk5ymadcb"))))
     (inputs
-     (list python-dateutil python-prompt-toolkit python-requests))
+     (list python-dateutil
+           python-prompt-toolkit
+           python-requests
+           python-typing-extensions))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
